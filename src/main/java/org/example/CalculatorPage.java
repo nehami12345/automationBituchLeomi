@@ -4,9 +4,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CalculatorPage extends BtlBasePage {
 
@@ -79,14 +76,11 @@ public class CalculatorPage extends BtlBasePage {
 
         WebElement noOption = wait.until(ExpectedConditions.presenceOfElementLocated(disabilityNoLoc));
 
-        // גלילה אל האלמנט ולחיצה כפויה באמצעות JS (פותר את בעיית ה-Intercepted)
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", noOption);
         js.executeScript("arguments[0].click();", noOption);
 
-        // שלב 2: טיפול בכפתור "המשך"
         WebElement continueBtn = wait.until(ExpectedConditions.presenceOfElementLocated(stepTwoContinueBtnLoc));
 
-        // גלילה ולחיצה גם על כפתור ההמשך ליתר ביטחון
         js.executeScript("arguments[0].scrollIntoView({block: 'center'});", continueBtn);
         js.executeScript("arguments[0].click();", continueBtn);
 

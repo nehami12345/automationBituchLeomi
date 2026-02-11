@@ -3,12 +3,10 @@ package org.example;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
 
 public class BtlBasePage extends BasePage{
 
@@ -22,8 +20,9 @@ public class BtlBasePage extends BasePage{
         mainMenuItem.click();
     }
     public void clickSubMenuItem(String subMenuText){
-       WebElement mainMenuItem = driver.findElement(By.linkText(subMenuText));
-       mainMenuItem.click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement mainMenuItem = wait.until(ExpectedConditions.elementToBeClickable(By.partialLinkText(subMenuText)));
+        mainMenuItem.click();
     }
 
     protected WebElement searchInput = driver.findElement(By.id("TopQuestions"));

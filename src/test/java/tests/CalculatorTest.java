@@ -1,8 +1,6 @@
 package tests;
 
-import org.example.CalculatorPage;
-import org.example.HomePage;
-import org.example.InsuranceInfoPage;
+import org.example.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -11,11 +9,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CalculatorTest extends BaseTest{
     @Test
@@ -41,7 +34,7 @@ public class CalculatorTest extends BaseTest{
 
         CalculatorPage calcPage = new CalculatorPage(driver);
 
-        String randomDate = generateRandomDate();
+        String randomDate = infoPage.generateRandomDate();
         System.out.println("Generated Date: " + randomDate);
         calcPage.fillStepOne(randomDate);
 
@@ -53,64 +46,12 @@ public class CalculatorTest extends BaseTest{
         boolean isFinished = calcPage.isFinishPageDisplayed();
         Assert.assertTrue("הטסט נכשל: לא הגענו לעמוד תוצאות החישוב", isFinished);
 
-        String actualAmount = getNationalInsuranceAmount("דמי ביטוח לאומי:");
+        String actualAmount = infoPage.getNationalInsuranceAmount("דמי ביטוח לאומי:");
         Assert.assertEquals("הסכום לתשלום שגוי", "48", actualAmount);
-        actualAmount = getNationalInsuranceAmount("דמי ביטוח בריאות:");
+        actualAmount = infoPage.getNationalInsuranceAmount("דמי ביטוח בריאות:");
         Assert.assertEquals("הסכום לתשלום שגוי", "123", actualAmount);
-        actualAmount = getNationalInsuranceAmount("סך הכל דמי ביטוח לחודש:");
+        actualAmount = infoPage.getNationalInsuranceAmount("סך הכל דמי ביטוח לחודש:");
         Assert.assertEquals("הסכום לתשלום שגוי", "171", actualAmount);
-    }
-    public String generateRandomDate() {
-        LocalDate now = LocalDate.now();
-
-        LocalDate maxDate = now.minusYears(18).minusDays(1);
-        LocalDate minDate = now.minusYears(70);
-
-        long minDay = minDate.toEpochDay();
-        long maxDay = maxDate.toEpochDay();
-        long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
-
-        LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
-        return randomDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-    }
-
-    public String getNationalInsuranceAmount(String labelToSearch) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-
-        try {
-            // שלב 1: המתנה שהטקסט הספציפי יופיע על המסך (ולא סתם שהדף ייטען)
-            WebElement labelElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//*[contains(text(), '" + labelToSearch + "')]")
-            ));
-
-            // שלב 2: שליפת הטקסט.
-            // אנו לוקחים את האלמנט שמצאנו ואת האלמנט שעוטף אותו (Parent)
-            // כדי לוודא שאנחנו תופסים את המספר גם אם הוא נמצא בתגית ליד (למשל בטבלה)
-            WebElement parentElement = labelElement.findElement(By.xpath("./.."));
-            String fullText = parentElement.getText();
-
-            System.out.println("השורה שנמצאה: " + fullText);
-
-            // שלב 3: חילוץ המספר באמצעות Regex
-            // התבנית מחפשת את הטקסט, נקודותיים (אופציונלי), רווחים, ואז מספר
-            Pattern pattern = Pattern.compile(labelToSearch + ".*?:?\\s*(\\d+)");
-            Matcher matcher = pattern.matcher(fullText);
-
-            if (matcher.find()) {
-                return matcher.group(1);
-            } else {
-                // ניסיון גיבוי: אם לא מצאנו בתוך ההורה, ננסה בכל זאת בתוך כל ה-Body אבל רק אחרי שווידאנו שהאלמנט קיים
-                String pageText = driver.findElement(By.tagName("body")).getText();
-                matcher = pattern.matcher(pageText);
-                if (matcher.find()) return matcher.group(1);
-            }
-
-            return "0";
-
-        } catch (Exception e) {
-            System.out.println("שגיאה בחילוץ הסכום: " + e.getMessage());
-            return "0";
-        }
     }
 
     @Test
@@ -122,21 +63,26 @@ public class CalculatorTest extends BaseTest{
 
         wait.until(ExpectedConditions.titleContains("אבטלה"));
         Assert.assertTrue("הכותרת לא תואמת", driver.getTitle().contains("אבטלה"));
+
+        InsuranceInfoPageAvtala avtalaPage = new InsuranceInfoPageAvtala(driver);
+        CalculatorPageForAvtala calcPage = avtalaPage.clickOnCalculator();
+
+        calcPage.clickCalculator();
+
+        wait.until(ExpectedConditions.urlContains("AvtalaCalcNew"));
+        Assert.assertTrue("לא הגענו למחשבון",
+                driver.getCurrentUrl().contains("AvtalaCalcNew"));
+
+        calcPage.fillStepOne("10/01/2026");
+
+        int[] salaries = {100,200,100,300,200,150};
+        calcPage.fillStepTwo(salaries);
+
+        boolean isFinished = calcPage.isResultsPageDisplayed();
+        Assert.assertTrue("הטסט נכשל: לא הגענו לעמוד תוצאות החישוב", isFinished);
+
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
