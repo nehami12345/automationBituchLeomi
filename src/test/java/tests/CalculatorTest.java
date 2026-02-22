@@ -53,34 +53,40 @@ public class CalculatorTest extends BaseTest{
         actualAmount = infoPage.getNationalInsuranceAmount("סך הכל דמי ביטוח לחודש:");
         Assert.assertEquals("הסכום לתשלום שגוי", "171", actualAmount);
     }
-
     @Test
     public void testNavigateToCalculatorA() {
-        HomePage homePage = new HomePage(driver);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            HomePage homePage = new HomePage(driver);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        homePage.navigateToAvtalaInfo();
+            homePage.navigateToAvtalaInfo();
 
-        wait.until(ExpectedConditions.titleContains("אבטלה"));
-        Assert.assertTrue("הכותרת לא תואמת", driver.getTitle().contains("אבטלה"));
+            wait.until(ExpectedConditions.titleContains("אבטלה"));
+            Assert.assertTrue("הכותרת לא תואמת", driver.getTitle().contains("אבטלה"));
 
-        InsuranceInfoPageAvtala avtalaPage = new InsuranceInfoPageAvtala(driver);
-        CalculatorPageForAvtala calcPage = avtalaPage.clickOnCalculator();
+            InsuranceInfoPageAvtala avtalaPage = new InsuranceInfoPageAvtala(driver);
+            CalculatorPageForAvtala calcPage = avtalaPage.clickOnCalculator();
 
-        calcPage.clickCalculator();
+            calcPage.clickCalculator();
 
-        wait.until(ExpectedConditions.urlContains("AvtalaCalcNew"));
-        Assert.assertTrue("לא הגענו למחשבון",
-                driver.getCurrentUrl().contains("AvtalaCalcNew"));
+            wait.until(ExpectedConditions.urlContains("AvtalaCalcNew"));
+            Assert.assertTrue("לא הגענו למחשבון",
+                    driver.getCurrentUrl().contains("AvtalaCalcNew"));
 
-        calcPage.fillStepOne("10/01/2026");
+            calcPage.fillStepOne("10/01/2026");
 
-        int[] salaries = {100,200,100,300,200,150};
-        calcPage.fillStepTwo(salaries);
+            int[] salaries = {100,200,100,300,200,150};
+            calcPage.fillStepTwo(salaries);
 
-        boolean isFinished = calcPage.isResultsPageDisplayed();
-        Assert.assertTrue("הטסט נכשל: לא הגענו לעמוד תוצאות החישוב", isFinished);
+            boolean isFinished = calcPage.isResultsPageDisplayed();
+            Assert.assertTrue("הטסט נכשל: לא הגענו לעמוד תוצאות החישוב", isFinished);
 
+            Assert.assertTrue("הטסט נכשל", isFinished);
+        } catch (AssertionError | Exception e) {
+            TestListener t = new TestListener(driver);
+            t.captureScreenshot(driver);
+            throw e;
+        }
     }
 }
 

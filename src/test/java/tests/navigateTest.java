@@ -30,7 +30,7 @@ public class navigateTest{
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "ילד נכה", "ילד נכה" },
+                { "ילד נכהגגגגגגגגגגגגגג", "ילד נכהגגגגגגגגגגגגג" },
                 { "אזרח ותיק", "אזרח ותיק" },
                 { "נפגעי עבודה", "נפגעי עבודה" },
                 { "הבטחת הכנסה", "הבטחת הכנסה" },
@@ -64,7 +64,7 @@ public class navigateTest{
         }
         catch (AssertionError | Exception e) {
             new TestListener(driver).captureScreenshot(driver);
-            throw e; // זרוק את השגיאה כדי שהטסט יסומן כנכשל
+            throw e;
         }
     }
 

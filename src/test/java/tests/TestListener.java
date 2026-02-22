@@ -23,7 +23,6 @@ public class TestListener extends TestWatcher {
 
     @Attachment(value = "Page Screenshot", type = "image/png")
     public byte[] captureScreenshot(WebDriver driver) {
-        // זו הפעולה שמצלמת ומצרפת לדוח
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 }
