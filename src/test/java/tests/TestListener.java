@@ -8,7 +8,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 public class TestListener extends TestWatcher {
-
     private WebDriver driver;
 
     public TestListener(WebDriver driver) {

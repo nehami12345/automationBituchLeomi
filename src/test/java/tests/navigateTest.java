@@ -30,7 +30,7 @@ public class navigateTest{
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "ילד נכהגגגגגגגגגגגגגג", "ילד נכהגגגגגגגגגגגגג" },
+                { "ילד נכה", "ילד נכה" },
                 { "אזרח ותיק", "אזרח ותיק" },
                 { "נפגעי עבודה", "נפגעי עבודה" },
                 { "הבטחת הכנסה", "הבטחת הכנסה" },
@@ -63,7 +63,8 @@ public class navigateTest{
                     actualBreadcrumb.contains(this.expectedResult));
         }
         catch (AssertionError | Exception e) {
-            new TestListener(driver).captureScreenshot(driver);
+            TestListener listener = new TestListener(driver);
+            listener.captureScreenshot(driver);
             throw e;
         }
     }

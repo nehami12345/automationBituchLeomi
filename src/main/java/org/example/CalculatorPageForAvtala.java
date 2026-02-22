@@ -76,7 +76,6 @@ public class CalculatorPageForAvtala extends BtlBasePage {
     public void fillAllSalaryInputs(int[] arr) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // מציאת כל ה-inputs בבת אחת לפי class משותף
         List<WebElement> salaryInputs = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(
                 By.cssSelector("input.txtbox_sallary.number.zeroOrMoreAchnassot")
         ));
